@@ -48,7 +48,7 @@ class Word {
     }
 
     // increase the strikes when user gets no letters
-    private fun increaseStrikes() {
+    fun increaseStrikes() {
         this.strikes += 1
     }
 
