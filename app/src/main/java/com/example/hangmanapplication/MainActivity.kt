@@ -1,33 +1,61 @@
 package com.example.hangmanapplication
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var word: Word
+    private lateinit var firstView: TextView
+    private lateinit var secondView: TextView
+    private lateinit var submitButton: Button
+    private lateinit var edit: EditText
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val word: Word = Word()
+        word = Word()
 
-        val firstView = findViewById<TextView>(R.id.textView)
-        val secondView = findViewById<TextView>(R.id.textView2)
-        val submitButton = findViewById<Button>(R.id.sub)
-        val edit = findViewById<EditText>(R.id.edit)
+        firstView = findViewById(R.id.textView)
+        secondView = findViewById(R.id.textView2)
+        submitButton = findViewById(R.id.sub)
+        edit = findViewById(R.id.edit)
 
         secondView.text = word.getWord()
 
         submitButton.setOnClickListener {
-            val firstChar = edit.text.get(0)
-            word.checkIfContains(firstChar)
+            val inputText = edit.text.toString().trim()
+            if (inputText.isNotEmpty() && inputText.length == 1) {
+                val guessedLetter = inputText[0]
 
-            firstView.text = word.getStrikes().toString()
-            secondView.text = word.getBlank()
+                word.checkIfContains(guessedLetter)
+
+                firstView.text = "Strikes: ${word.getStrikes()}"
+                secondView.text = word.getBlank()
+
+                if (word.isGameWon()) {
+                    displayMessage("You've won!")
+                    startNewGame()
+                } else if (word.isGameLost()) {
+                    displayMessage("You've lost! The word was: ${word.getWord()}")
+                    startNewGame()
+                }
+            }
         }
     }
 
+    private fun startNewGame() {
+        word = Word()
+        secondView.text = word.getWord()
+        firstView.text = "Strikes: 0"
+        edit.text.clear()
+    }
+
+    private fun displayMessage(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
 }

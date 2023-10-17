@@ -77,4 +77,11 @@ class Word {
         return this.blanks
     }
 
+    fun isGameWon(): Boolean {
+        return current == blanks
+    }
+
+    fun isGameLost(): Boolean {
+        return strikes >= 6
+    }
 }
